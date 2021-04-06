@@ -16,6 +16,10 @@ class IllegalCommand(Exception):
     pass
 
 
+class NoSuchFolder(Exception):
+    pass
+
+
 class FileSystem:
     LEGAL_COMMANDS = ["echo"]
 
@@ -59,6 +63,14 @@ class FileSystem:
         folder = FileSystemNode(parent=self, name=args[0])
         self.file_system_tree.add_child(folder)
 
+    def cd(self, args: List[str]):
+        folder_name = args[0]
+        for child in self.current.children:
+            if folder_name == child.name:
+                self.current = child
+                return
+        raise NoSuchFolder()
+
 
 def reader(user_input: str) -> List[str]:
     """
@@ -88,7 +100,7 @@ def repl():
         except (EOFError, KeyboardInterrupt):
             break
         except Exception as err:
-            print(f'Error: {err}')
+            print(f'Error: {err.__class__.__name__}')
     print('Bayush')
 
 
