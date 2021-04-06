@@ -1,7 +1,12 @@
+import logging
 from typing import List, Union, Optional
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 
 # How can we represent the file system?
+
 class FileSystemNode:
     def __init__(self, name: str, parent=None):
         self.parent = parent
@@ -10,6 +15,12 @@ class FileSystemNode:
 
     def add_child(self, child):
         self.children.append(child)
+
+    def get_path(self):
+        path = [self.name]
+        if self.parent:
+            return path + self.parent.get_path()
+        return path
 
 
 class IllegalCommand(Exception):
@@ -50,7 +61,10 @@ class FileSystem:
         print(" ".join(args))
 
     def pwd(self, args: List[str]):
-        pwd = self.current.name
+
+        path = self.current.get_path()
+        path.reverse()
+        pwd = '/'.join(path)
         print(pwd)
         return pwd
 
@@ -60,8 +74,8 @@ class FileSystem:
             print(f"* {child.name}")
 
     def mkdir(self, args: List[str]):
-        folder = FileSystemNode(parent=self, name=args[0])
-        self.file_system_tree.add_child(folder)
+        folder = FileSystemNode(parent=self.current, name=args[0])
+        self.current.add_child(folder)
 
     def cd(self, args: List[str]):
         folder_name = args[0]
@@ -69,6 +83,11 @@ class FileSystem:
             if folder_name == child.name:
                 self.current = child
                 return
+        if folder_name == '..':
+            if self.current.parent:
+                self.current = self.current.parent
+                return
+            
         raise NoSuchFolder()
 
 
@@ -100,6 +119,7 @@ def repl():
         except (EOFError, KeyboardInterrupt):
             break
         except Exception as err:
+            logger.exception(msg=err)
             print(f'Error: {err.__class__.__name__}')
     print('Bayush')
 
