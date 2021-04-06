@@ -25,3 +25,6 @@ Providing a REPL
 * mkdir with concatenated paths `mkdir child/another_child/sub_folder`
 
 
+## Using this repo
+
+Start with `git checkout v1` (git tag name) and work your way to v6 (more to come)
