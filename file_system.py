@@ -50,6 +50,15 @@ class FileSystem:
         print(pwd)
         return pwd
 
+    def ls(self, args: List[str]):
+        children = self.current.children
+        for child in children:
+            print(f"* {child.name}")
+
+    def mkdir(self, args: List[str]):
+        folder = FileSystemNode(parent=self, name=args[0])
+        self.file_system_tree.add_child(folder)
+
 
 def reader(user_input: str) -> List[str]:
     """
