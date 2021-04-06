@@ -87,7 +87,7 @@ class FileSystem:
             if self.current.parent:
                 self.current = self.current.parent
                 return
-            
+
         raise NoSuchFolder()
 
 
