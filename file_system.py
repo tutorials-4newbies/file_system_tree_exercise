@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union, Optional
 
 
 # How can we represent the file system?
@@ -19,13 +19,14 @@ class IllegalCommand(Exception):
 class FileSystem:
     LEGAL_COMMANDS = ["echo"]
 
-    def dispatch_command(self, cmd: str, args: List[str]):
-        # add a check if in legal commands else throw an exception
-        func = getattr(self, cmd)
-        func(args)
-
     def __init__(self):
         self.file_system_tree = FileSystemNode(name='/')
+        self.current = self.file_system_tree
+
+    def dispatch_command(self, cmd: str, args: List[str]) -> Optional[str]:
+        # add a check if in legal commands else throw an exception
+        func = getattr(self, cmd)
+        return func(args)
 
     def evaluate(self, parsed_user_input: List[str]) -> str:
         """
@@ -39,10 +40,15 @@ class FileSystem:
         # Implement pwd
         cmd = parsed_user_input.pop(0)
         args = parsed_user_input
-        self.dispatch_command(cmd, args)
+        return self.dispatch_command(cmd, args)
 
     def echo(self, args: List[str]):
         print(" ".join(args))
+
+    def pwd(self, args: List[str]):
+        pwd = self.current.name
+        print(pwd)
+        return pwd
 
 
 def reader(user_input: str) -> List[str]:
