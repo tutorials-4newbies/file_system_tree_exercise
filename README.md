@@ -20,4 +20,8 @@ Providing a REPL
 * rmdir
 * Adding types of files
 
+## Advanced
+
+* mkdir with concatenated paths `mkdir child/another_child/sub_folder`
+
 
